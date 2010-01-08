@@ -387,6 +387,8 @@ module Webrat
         end
       when :rack, :merb
         Rack::Test::UploadedFile.new(@value, content_type)
+      when :mechanize
+        open(@value) if @value.present?
       end
     end
 
@@ -485,3 +487,4 @@ module Webrat
   end
 
 end
+
