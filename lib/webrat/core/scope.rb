@@ -332,7 +332,11 @@ module Webrat
     end
 
     def scoped_dom
-      @scope.dom.css(@selector).first
+      if @selector =~ /^\.?\/\/?/
+        @scope.dom.xpath(@selector).first
+      else
+        @scope.dom.css(@selector).first
+      end
     end
 
     def locate_field(field_locator, *field_types) #:nodoc:
