@@ -194,6 +194,10 @@ EOS
       Webrat::Locators::FieldLabeledLocator.new(self, current_dom, label, *field_types).locate!
     end
 
+    def attach_file(field_locator, path, content_type = nil)
+      fill_in(field_locator, :with => path)
+    end
+
     def selenium
       return $browser if $browser
       setup
