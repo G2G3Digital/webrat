@@ -93,7 +93,12 @@ module Webrat
     webrat_deprecate :clicks_link, :click_link
 
     def click_link_within(selector, link_text, options = {})
-      locator = "webratlinkwithin=#{selector}|#{link_text}"
+      if selector =~ /^\.?\/\/?/
+        locator = "xpath=#{selector}//a[contains(.,'#{link_text}')]"
+       else
+        locator = "webratlinkwithin=#{selector}|#{link_text}"
+      end
+
       selenium.wait_for_element locator, :timeout_in_seconds => 5
       selenium.click locator
     end
@@ -185,6 +190,10 @@ EOS
       true
     end
 
+    def field_labeled(label, *field_types)
+      Webrat::Locators::FieldLabeledLocator.new(self, current_dom, label, *field_types).locate!
+    end
+
     def selenium
       return $browser if $browser
       setup
@@ -193,6 +202,9 @@ EOS
 
     webrat_deprecate :browser, :selenium
 
+    def current_dom
+      @dom||= Webrat::XML.document(response_body)
+    end
 
     def save_and_open_screengrab
       return unless File.exist?(saved_page_dir)
@@ -265,3 +277,4 @@ EOS
     end
   end
 end
+
